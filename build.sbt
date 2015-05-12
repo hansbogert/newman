@@ -1,14 +1,10 @@
 import org.scalastyle.sbt.ScalastylePlugin
-import NewmanReleaseSteps._
-import sbtrelease._
-import ReleaseStateTransformations._
-import ReleasePlugin._
-import ReleaseKeys._
 import sbt._
+import sbt.Keys._
 
 name := "newman"
 
-organization := "com.github.indykish"
+organization := "io.megam"
 
 scalaVersion := "2.11.6"
 
@@ -18,8 +14,8 @@ scalacOptions in Test ++= Seq("-Yrangepos")
 
 
 libraryDependencies ++= {
-  val httpCoreVersion = "4.2.5"
-  val httpClientVersion = "4.2.5"
+  val httpCoreVersion = "4.4.1"
+  val httpClientVersion = "4.4.1"
   val scalaCheckVersion = "1.12.2"
   val specs2Version = "3.6"
   val mockitoVersion = "1.9.0"
@@ -47,10 +43,7 @@ libraryDependencies ++= {
 
 resolvers += Resolver.bintrayRepo("scalaz", "releases")
 
-
 testOptions in Test += Tests.Argument("html", "console")
-
-//conflictManager := ConflictManager.strict
 
 dependencyOverrides <+= (scalaVersion) { vsn => "org.scala-lang" % "scala-library" % vsn }
 
@@ -58,78 +51,20 @@ logBuffered := false
 
 ScalastylePlugin.Settings
 
-releaseSettings
-
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,
-  inquireVersions,
-  runTest,
-  setReleaseVersion,
-  commitReleaseVersion,
-  setReadmeReleaseVersion,
-  tagRelease,
-  publishArtifacts.copy(action = publishSignedAction),
-  setNextVersion,
-  commitNextVersion,
-  pushChanges
+lazy val commonSettings = Seq(
+  version in ThisBuild := "1.3.8",
+  organization in ThisBuild := "Megam Systems"
 )
 
-publishTo <<= (version) { version: String =>
-  val nexus = "https://oss.sonatype.org/"
-  if (version.trim.endsWith("SNAPSHOT")) {
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-   } else {
-    Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  }
-}
-
-publishMavenStyle := true
-
-publishArtifact in Test := true
-
-pomExtra := (
-  <url>https://github.com/stackmob/newman</url>
-  <licenses>
-    <license>
-      <name>Apache 2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <scm>
-    <url>git@github.com:stackmob/newman.git</url>
-    <connection>scm:git:git@github.com:stackmob/newman.git</connection>
-  </scm>
-  <developers>
-    <developer>
-      <id>arschles</id>
-      <name>Aaron Schlesinger</name>
-      <url>http://www.stackmob.com</url>
-    </developer>
-    <developer>
-      <id>devmage</id>
-      <name>Andrew Harris</name>
-      <url>http://www.stackmob.com</url>
-    </developer>
-    <developer>
-      <id>taylorleese</id>
-      <name>Taylor Leese</name>
-      <url>http://www.stackmob.com</url>
-    </developer>
-    <developer>
-      <id>kelseyq</id>
-      <name>Kelsey Innis</name>
-      <url>http://www.stackmob.com</url>
-    </developer>
-    <developer>
-      <id>wpalmeri</id>
-      <name>Will Palmeri</name>
-      <url>http://www.stackmob.com</url>
-    </developer>
-    <developer>
-      <id>jrwest</id>
-      <name>Jordan West</name>
-      <url>http://github.com/jrwest</url>
-    </developer>
-  </developers>
-)
+lazy val root = (project in file(".")).
+  settings(commonSettings).
+  settings(
+    sbtPlugin := true,
+    name := "newman",
+    description := """This is the fork of newman https://github.com/stackmob/newman upgraded to scala 2.11 and scalaz 7.1.2. We primarily use it for testing our API Gateway : https://github.com/megamsys/megam_gateway.git
+    Feel free to collaborate at https://github.com/megamsys/newman.git.""",
+    licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
+    publishMavenStyle := false,
+    bintrayOrganization := Some("megamsys"),
+    bintrayRepository := "scala"
+  )
