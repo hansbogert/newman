@@ -36,29 +36,24 @@ import java.util.concurrent.{ThreadFactory, Executors}
 import ApacheHttpClient._
 import java.util.concurrent.atomic.AtomicInteger
 
-class ApacheHttpClient(val httpClient: org.apache.http.client.HttpClient)
-                      (implicit val requestContext: ExecutionContext = newmanRequestExecutionContext) extends HttpClient {
-
-  def this(socketTimeout: Int = ApacheHttpClient.DefaultSocketTimeout,
-           connectionTimeout: Int = ApacheHttpClient.DefaultConnectionTimeout,
-           maxConnectionsPerRoute: Int = ApacheHttpClient.DefaultMaxConnectionsPerRoute,
-           maxTotalConnections: Int = ApacheHttpClient.DefaultMaxTotalConnections)
-          (implicit requestContext: ExecutionContext = newmanRequestExecutionContext) = {
-    this({
-      val connManager: ClientConnectionManager = {
-        val cm = new PoolingClientConnectionManager()
-        cm.setDefaultMaxPerRoute(maxConnectionsPerRoute)
-        cm.setMaxTotal(maxTotalConnections)
-        cm
-      }
-
-      val client = new DefaultHttpClient(connManager)
-      val httpParams = client.getParams
-      HttpConnectionParams.setConnectionTimeout(httpParams, connectionTimeout)
-      HttpConnectionParams.setSoTimeout(httpParams, socketTimeout)
-      client
-    })(requestContext)
-  }
+class ApacheHttpClient(socketTimeout: Int = ApacheHttpClient.DefaultSocketTimeout,
+       connectionTimeout: Int = ApacheHttpClient.DefaultConnectionTimeout,
+       maxConnectionsPerRoute: Int = ApacheHttpClient.DefaultMaxConnectionsPerRoute,
+       maxTotalConnections: Int = ApacheHttpClient.DefaultMaxTotalConnections)(implicit val requestContext: ExecutionContext = newmanRequestExecutionContext) extends HttpClient {
+       val httpClient: org.apache.http.client.HttpClient =  {
+           val connManager: ClientConnectionManager = {
+           val cm = new PoolingClientConnectionManager()
+               cm.setDefaultMaxPerRoute(maxConnectionsPerRoute)
+               cm.setMaxTotal(maxTotalConnections)
+               cm
+             }
+           val client = new DefaultHttpClient(connManager)
+           val httpParams = client.getParams
+           HttpConnectionParams.setConnectionTimeout(httpParams, connectionTimeout)
+           HttpConnectionParams.setSoTimeout(httpParams, socketTimeout)
+           client
+     }
+   
 
   protected def executeRequest(httpMessage: HttpRequestBase,
                                url: URL,

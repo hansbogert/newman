@@ -21,8 +21,10 @@ import Keys._
 import sbtrelease._
 import ReleasePlugin._
 import ReleaseKeys._
+import ReleaseStateTransformations._
 import Utilities._
 import com.typesafe.sbt.SbtPgp.PgpKeys._
+
 
 object NewmanReleaseSteps {
 
