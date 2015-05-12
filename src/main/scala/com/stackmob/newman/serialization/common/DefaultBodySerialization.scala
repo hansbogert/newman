@@ -25,7 +25,7 @@ object DefaultBodySerialization {
 
   def getReader[A <: AnyRef](implicit m:Manifest[A]): JSONR[A] = new JSONR[A] {
     override def read(json: JValue): Result[A] = {
-      (fromTryCatch {
+      (fromTryCatchThrowable[A,Throwable] {
         json.extract[A](Serialization.formats(NoTypeHints), m)
       } leftMap{ t: Throwable =>
         UncategorizedError(t.getClass.getCanonicalName, t.getMessage, List())

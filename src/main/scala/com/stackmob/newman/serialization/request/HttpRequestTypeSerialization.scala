@@ -29,9 +29,9 @@ object HttpRequestTypeSerialization extends SerializationBase[HttpRequestType] {
   implicit override val reader = new JSONR[HttpRequestType] {
     override def read(jValue: JValue): ValidationNel[Error, HttpRequestType] = jValue match {
       case JString(s) => s.readEnum[HttpRequestType].map(_.successNel[Error]) | {
-        UncategorizedError("request type", "unknown request type %s".format(s), List()).failNel[HttpRequestType]
+        UncategorizedError("request type", "unknown request type %s".format(s), List()).failureNel[HttpRequestType]
       }
-      case _ => NoSuchFieldError("request type", jValue).failNel[HttpRequestType]
+      case _ => NoSuchFieldError("request type", jValue).failureNel[HttpRequestType]
     }
   }
 

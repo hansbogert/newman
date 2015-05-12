@@ -30,7 +30,7 @@ object URLSerialization extends SerializationBase[URL] {
   implicit override val reader = new JSONR[URL] {
     override def read(jValue: JValue): Result[URL] = jValue match {
       case JString(s) => new URL(s).successNel[Error]
-      case j => UnexpectedJSONError(j, classOf[JString]).failNel[URL]
+      case j => UnexpectedJSONError(j, classOf[JString]).failureNel[URL]
     }
   }
 }

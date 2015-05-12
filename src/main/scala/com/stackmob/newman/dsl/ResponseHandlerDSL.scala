@@ -25,6 +25,8 @@ import response.HttpResponse.JSONParsingError
 import java.nio.charset.Charset
 import Constants._
 import net.liftweb.json.scalaz.JsonScalaz._
+import scalaz.Validation.FlatMap._
+
 
 /**
  * Facilitates the handling of various response codes per response, where each handler for a given code may fail or may succeed with
@@ -172,13 +174,13 @@ trait ResponseHandlerDSL {
           handler(resp)
         }
       } catch {
-        case t: Throwable => errorConv(t).fail[Success]
+        case t: Throwable => errorConv(t).failure[Success]
       }
     }
 
     def toValidation: Validation[Failure, Success] = {
       default { resp =>
-        errorConv(UnhandledResponseCode(resp.code, resp.bodyString)).fail[Success]
+        errorConv(UnhandledResponseCode(resp.code, resp.bodyString)).failure[Success]
       }
     }
   }

@@ -27,7 +27,7 @@ object RawBodySerialization extends SerializationBase[RawBody] {
   implicit override val reader = new JSONR[RawBody] {
     override def read(json: JValue): Result[RawBody] = json match {
       case JString(s) => s.getBytes(UTF8Charset).successNel[Error]
-      case j => UnexpectedJSONError(j, classOf[JString]).failNel[RawBody]
+      case j => UnexpectedJSONError(j, classOf[JString]).failureNel[RawBody]
     }
   }
 

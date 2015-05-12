@@ -19,6 +19,8 @@ package response
 
 import scalaz._
 import Scalaz._
+import scalaz.Validation
+import scalaz.Validation.FlatMap._
 import scalaz.NonEmptyList._
 import jsonscalaz._
 import java.nio.charset.Charset
@@ -84,7 +86,7 @@ case class HttpResponse(code: HttpResponseCode,
 
   private def parseBody[T](implicit reader: JSONR[T],
                            charset: Charset = defaultCharset): Result[T] = {
-    Validation.fromTryCatch {
+    Validation.fromTryCatchThrowable[JValue,Throwable] {
       parse(bodyString(charset))
     } leftMap { t: Throwable =>
       nels(UncategorizedError(t.getClass.getCanonicalName, t.getMessage, Nil))
@@ -100,14 +102,14 @@ case class HttpResponse(code: HttpResponseCode,
         if(this.code === expected) {
           ().success[Throwable]
         } else {
-          (UnexpectedResponseCode(expected, this.code): Throwable).fail[T]
+          (UnexpectedResponseCode(expected, this.code): Throwable).failure[T]
         }
       }
       body <- {
         try {
           decoder(this)
         } catch {
-          case t: Throwable => t.fail[T]
+          case t: Throwable => t.failure[T]
         }
       }
     } yield {
@@ -138,7 +140,7 @@ case class HttpResponse(code: HttpResponseCode,
       case (HttpHeaders.CONTENT_TYPE, CHARSET_PATTERN(_, charsetName)) =>
         charsetName
     })
-  }).flatMap(charsetName => Validation.fromTryCatch(Charset.forName(charsetName)).toOption)
+  }).flatMap(charsetName => Validation.fromTryCatchThrowable[Charset,Throwable](Charset.forName(charsetName)).toOption)
 
   private def defaultCharset = responseCharset.getOrElse(UTF8Charset)
 }
@@ -149,7 +151,7 @@ object HttpResponse {
     fromJSON(jValue)(getResponseSerialization.reader)
   }
 
-  def fromJson(json: String): Result[HttpResponse] = (Validation.fromTryCatch {
+  def fromJson(json: String): Result[HttpResponse] = (Validation.fromTryCatchThrowable[JValue,Throwable] {
     parse(json)
   } leftMap { t: Throwable =>
     UncategorizedError(t.getClass.getCanonicalName, t.getMessage, List())

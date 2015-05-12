@@ -33,20 +33,20 @@ object HttpResponseCodeSerialization extends SerializationBase[HttpResponseCode]
   override implicit val reader = new JSONR[HttpResponseCode] {
     override def read(json: JValue): Result[HttpResponseCode] = {
       json match {
-        case JInt(code) => fromTryCatch(HttpResponseCode.fromInt(code.toInt)).fold(
+        case JInt(code) => fromTryCatchThrowable[Option[com.stackmob.newman.response.HttpResponseCode],Throwable](HttpResponseCode.fromInt(code.toInt)).fold(
           succ = {
             o: Option[HttpResponseCode] =>
               o.map {
                 c: HttpResponseCode => c.successNel[Error]
               } | {
-                UncategorizedError("response code", "Unknown Http Response Code %d".format(code), List()).failNel[HttpResponseCode]
+                UncategorizedError("response code", "Unknown Http Response Code %d".format(code), List()).failureNel[HttpResponseCode]
               }
           },
           fail = { t: Throwable =>
-            UncategorizedError("response code", t.getMessage, List()).failNel[HttpResponseCode]
+            UncategorizedError("response code", t.getMessage, List()).failureNel[HttpResponseCode]
           }
         )
-        case j => UnexpectedJSONError(j, classOf[JInt]).failNel[HttpResponseCode]
+        case j => UnexpectedJSONError(j, classOf[JInt]).failureNel[HttpResponseCode]
       }
     }
   }

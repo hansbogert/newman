@@ -67,7 +67,7 @@ object HeadersSerialization extends SerializationBase[Headers] {
           val headers: Headers = Headers(list)
           headers.successNel[Error]
         }
-        case j => UnexpectedJSONError(j, classOf[JArray]).failNel[Headers]
+        case j => UnexpectedJSONError(j, classOf[JArray]).failureNel[Headers]
       }
     }
   }
