@@ -1,4 +1,3 @@
-import org.scalastyle.sbt.ScalastylePlugin
 import sbt._
 import sbt.Keys._
 
@@ -48,8 +47,6 @@ testOptions in Test += Tests.Argument("html", "console")
 dependencyOverrides <+= (scalaVersion) { vsn => "org.scala-lang" % "scala-library" % vsn }
 
 logBuffered := false
-
-ScalastylePlugin.Settings
 
 lazy val commonSettings = Seq(
   version in ThisBuild := "1.3.8",
