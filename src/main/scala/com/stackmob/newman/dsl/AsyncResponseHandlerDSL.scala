@@ -25,6 +25,7 @@ import com.stackmob.newman.Constants._
 import com.stackmob.newman._
 import com.stackmob.newman.response.HttpResponse.JSONParsingError
 import scala.concurrent.{ExecutionContext, Future}
+import scalaz.Validation.FlatMap._
 
 trait AsyncResponseHandlerDSL {
 
@@ -133,12 +134,12 @@ trait AsyncResponseHandlerDSL {
           }
         }.recover {
           case t: Throwable => {
-            errorConv(t).fail[Success]
+            errorConv(t).failure[Success]
           }
         }
       } catch {
         case t: Throwable => {
-          Future.successful(errorConv(t).fail[Success])
+          Future.successful(errorConv(t).failure[Success])
         }
       }
       futValidation
@@ -146,7 +147,7 @@ trait AsyncResponseHandlerDSL {
 
     def toFutureValidation(implicit ctx: ExecutionContext): FutureValidation[Failure, Success] = {
       default { resp =>
-        errorConv.apply(UnhandledResponseCode(resp.code, resp.bodyString)).fail[Success]
+        errorConv.apply(UnhandledResponseCode(resp.code, resp.bodyString)).failure[Success]
       }
     }
   }

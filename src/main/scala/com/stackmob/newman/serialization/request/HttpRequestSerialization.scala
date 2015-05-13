@@ -19,6 +19,9 @@ package serialization.request
 
 import scalaz._
 import Scalaz._
+import scalaz.Validation
+import scalaz.Validation.FlatMap._
+import scalaz.NonEmptyList._
 import com.stackmob.newman.serialization.common.SerializationBase
 import com.stackmob.newman.request._
 import net.liftweb.json._
@@ -72,7 +75,7 @@ class HttpRequestSerialization(client: HttpClient) extends SerializationBase[Htt
           case HEAD => baseApplicative(client.head(_, _))
           case _ => UncategorizedError("request type",
             "unsupported request type %s".format(reqType.stringVal),
-            List()).failNel
+            List()).failureNel
         }
         res
       }

@@ -18,9 +18,12 @@ package com.stackmob.newman
 package request
 
 import java.net.URL
+
 import scalaz._
-import scalaz.Validation._
 import Scalaz._
+import scalaz.Validation
+import scalaz.Validation.FlatMap._
+import scalaz.NonEmptyList._
 import net.liftweb.json._
 import net.liftweb.json.scalaz.JsonScalaz._
 import com.stackmob.newman.{Constants, HttpClient}
@@ -31,6 +34,7 @@ import com.stackmob.newman.caching._
 import org.apache.commons.codec.binary.Hex
 import scala.concurrent.{ExecutionContext, Await, Future}
 import scala.concurrent.duration._
+
 
 trait HttpRequest {
   def url: URL
@@ -125,7 +129,7 @@ object HttpRequest {
     fromJSON(jValue)(requestSerialization.reader)
   }
 
-  def fromJson(json: String)(implicit client: HttpClient): Result[HttpRequest] = (fromTryCatch {
+  def fromJson(json: String)(implicit client: HttpClient): Result[HttpRequest] = (Validation.fromTryCatchThrowable[JValue,Throwable] {
     parse(json)
   } leftMap { t: Throwable =>
     UncategorizedError(t.getClass.getCanonicalName, t.getMessage, List())
