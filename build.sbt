@@ -1,15 +1,46 @@
-import sbt._
-import sbt.Keys._
-
 name := "newman"
 
 organization := "io.megam"
 
+description := """This is the fork of newman https://github.com/stackmob/newman upgraded to scala 2.11 and scalaz 7.1.2. We primarily use it for testing our API Gateway : https://github.com/megamsys/megam_gateway.git
+Feel free to collaborate at https://github.com/megamsys/newman.git."""
+
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
+
+bintrayOrganization := Some("megamsys")
+
+bintrayRepository := "scala"
+
+publishMavenStyle := true
+
 scalaVersion := "2.11.6"
 
-scalacOptions := Seq("-unchecked", "-deprecation", "-feature")
-
 scalacOptions in Test ++= Seq("-Yrangepos")
+
+scalacOptions := Seq(
+  "-target:jvm-1.8",
+  "-deprecation",
+  "-feature",
+  "-optimise",
+  "-Xcheckinit",
+  "-Xlint",
+  "-Xverify",
+  "-Yinline",
+  "-Yclosure-elim",
+  "-Yconst-opt",
+  "-Ybackend:GenBCode",
+  "-language:implicitConversions",
+  "-language:higherKinds",
+  "-language:reflectiveCalls",
+  "-language:postfixOps",
+  "-language:implicitConversions",
+  "-Ydead-code")
+
+  incOptions := incOptions.value.withNameHashing(true)
+
+  resolvers ++= Seq(Resolver.sonatypeRepo("releases"), Resolver.sonatypeRepo("snapshots"),
+  Resolver.bintrayRepo("scalaz", "releases")
+)
 
 
 libraryDependencies ++= {
@@ -39,29 +70,3 @@ libraryDependencies ++= {
     "org.mockito" % "mockito-all" % mockitoVersion % "test"
   )
 }
-
-resolvers += Resolver.bintrayRepo("scalaz", "releases")
-
-testOptions in Test += Tests.Argument("html", "console")
-
-dependencyOverrides <+= (scalaVersion) { vsn => "org.scala-lang" % "scala-library" % vsn }
-
-logBuffered := false
-
-lazy val commonSettings = Seq(
-  version in ThisBuild := "1.3.8",
-  organization in ThisBuild := "Megam Systems"
-)
-
-lazy val root = (project in file(".")).
-  settings(commonSettings).
-  settings(
-    sbtPlugin := true,
-    name := "newman",
-    description := """This is the fork of newman https://github.com/stackmob/newman upgraded to scala 2.11 and scalaz 7.1.2. We primarily use it for testing our API Gateway : https://github.com/megamsys/megam_gateway.git
-    Feel free to collaborate at https://github.com/megamsys/newman.git.""",
-    licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
-    publishMavenStyle := false,
-    bintrayOrganization := Some("megamsys"),
-    bintrayRepository := "scala"
-  )
