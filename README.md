@@ -14,24 +14,22 @@ Newman supports the following basic features:
 * In memory response caching with TTL expiry
 * ETag HTTP caching
 
-To add it to your project, use this for Maven:
+## Usage for scala 2.11
 
-```xml
-<dependency>
-  <groupId>com.stackmob</groupId>
-  <artifactId>newman_${scala.version}</artifactId>
-  <version>1.3.5</version>
-</dependency>
-```
-
-or the equivalent for sbt:
+### sbt
 
 ```scala
-libraryDependencies += "com.stackmob" %% "newman" % "1.3.5"
+	resolvers ++= Seq(Resolver.sonatypeRepo("releases"),
+	Resolver.sonatypeRepo("snapshots"),
+	Resolver.bintrayRepo("scalaz", "releases"),
+	Resolver.bintrayRepo("io.megam", "scala"))
+
+	libraryDependencies += "io.megam" % "newman" % "1.3.9"
+
 ```
 
 # Basic Usage
-	
+
 ```scala
 import com.stackmob.newman._
 import com.stackmob.newman.dsl._
@@ -47,13 +45,13 @@ println(s"Response returned from ${url.toString} with code ${response.code}, bod
 ```
 
 #The DSL
-Newman comes with a DSL which is inspired by [Dispatch](http://dispatch.databinder.net/Dispatch.html), 
+Newman comes with a DSL which is inspired by [Dispatch](http://dispatch.databinder.net/Dispatch.html),
 but uses mostly english instead of symbols.
-This DSL is the recommended way to build requests, and the above example in "Basic Usage" uses the DSL to 
+This DSL is the recommended way to build requests, and the above example in "Basic Usage" uses the DSL to
 construct a GET request.
 
-To start using the DSL, simply `import com.stackmob.newman.dsl._`. 
-The functions of interest in the DSL are uppercase representations of the HTTP verbs: 
+To start using the DSL, simply `import com.stackmob.newman.dsl._`.
+The functions of interest in the DSL are uppercase representations of the HTTP verbs:
 
 * `def GET(url: URL)(implicit client: HttpClient)`
 * `def POST(url: URL)(implicit client: HttpClient)`
@@ -61,10 +59,10 @@ The functions of interest in the DSL are uppercase representations of the HTTP v
 * `def DELETE(url: URL)(implicit client: HttpClient)`
 * `def HEAD(url: URL)(implicit client: HttpClient)`
 
-Notice that each method takes an implicit `HttpClient`, so you must declare your own implicit before 
+Notice that each method takes an implicit `HttpClient`, so you must declare your own implicit before
 you use any of the above listed DSL methods, or pass one explicitly.
 
-Each method listed above returns a Builder, which works in concert with the implicit methods defined 
+Each method listed above returns a Builder, which works in concert with the implicit methods defined
 in the `DSL` package to let you build up a request and then execute it.
 
 # Executing Requests
@@ -95,13 +93,13 @@ import com.stackmob.newman.{ETagAwareHttpClient, ApacheHttpClient}
 import com.stackmob.newman.caching.InMemoryHttpResponseCacher
 import com.stackmob.newman.dsl._
 import java.net.URL
-	
+
 //change this implementation to your own if you want to use Memcached, Redis, etc
 val cache = new InMemoryHttpResponseCacher
 val rawHttpClient = new ApacheHttpClient
 //eTagClient will be used in the DSL to construct & execute requests below
 implicit val eTagClient = new ETagAwareHttpClient(rawHttpClient, cache)
-	
+
 val url = new URL("http://stackmob.com")
 //since the cacher is empty, this will issue a request to stackmob.com without an If-None-Match header
 val res1 = GET(url).apply
