@@ -48,10 +48,9 @@ libraryDependencies ++= {
   val httpClientVersion = "4.4.1"
   val scalaCheckVersion = "1.12.2"
   val specs2Version = "3.6"
-  val mockitoVersion = "1.9.0"
-  val liftJsonVersion = "3.0-M5-1"
+  val liftJsonVersion = "2.6.2"
   val sprayVersion = "1.3.3"
-  val akkaVersion = "2.3.10"
+  val akkaVersion = "2.3.11"
 
 
   Seq(
@@ -66,7 +65,6 @@ libraryDependencies ++= {
     "net.liftweb" %% "lift-json-scalaz7" % liftJsonVersion,
     "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
     "org.specs2" %% "specs2-core" % specs2Version % "test" exclude("org.scalaz", "scalaz-core_2.11"),
-    "org.pegdown" % "pegdown" % "1.5.0" % "test" exclude("org.parboiled", "parboiled-core"),
-    "org.mockito" % "mockito-all" % mockitoVersion % "test"
+    "org.mockito" % "mockito-all" % "1.10.19" % "test"
   )
 }
