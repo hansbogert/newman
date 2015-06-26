@@ -24,7 +24,7 @@ Newman supports the following basic features:
 	Resolver.bintrayRepo("scalaz", "releases"),
 	Resolver.bintrayRepo("io.megam", "scala"))
 
-	libraryDependencies += "io.megam" % "newman" % "1.3.9"
+	libraryDependencies += "io.megam" % "newman" % "1.3.10"
 
 ```
 
@@ -43,6 +43,21 @@ val url = new URL("http://google.com")
 val response = Await.result(GET(url).apply, 1.second) //this will throw if the response doesn't return within 1 second
 println(s"Response returned from ${url.toString} with code ${response.code}, body ${response.bodyString}")
 ```
+#Publishing in bintray
+
+For more information [https://github.com/softprops/bintray-sbt](https://github.com/softprops/bintray-sbt)
+
+```
+#from the sbt REPL
+
+> bintrayChangeCredentials
+
+> bintrayWhoami
+
+> publish
+
+```
+
 
 #The DSL
 Newman comes with a DSL which is inspired by [Dispatch](http://dispatch.databinder.net/Dispatch.html),
