@@ -44,14 +44,13 @@ scalacOptions := Seq(
 
 
 libraryDependencies ++= {
-  val httpCoreVersion = "4.4.1"
-  val httpClientVersion = "4.5"
+  val httpCoreVersion = "4.4.4"
+  val httpClientVersion = "4.5.1"
   val scalaCheckVersion = "1.12.2"
-  val specs2Version = "3.6.1-20150618235732-d4f57e9"
-  val liftJsonVersion = "3.0-M5-1"
+  val specs2Version = "3.6.5-20151108070227-1e34889"
+  val liftJsonVersion = "3.0-M6"
   val sprayVersion = "1.3.3"
-  val akkaVersion = "2.3.11"
-
+  val akkaVersion = "2.4.0"
 
   Seq(
     "org.apache.httpcomponents" % "httpcore" % httpCoreVersion,
@@ -59,9 +58,9 @@ libraryDependencies ++= {
     "io.spray" %% "spray-client" % sprayVersion,
     "io.spray" %% "spray-caching" % sprayVersion,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-    "com.twitter" %% "finagle-http" % "6.26.0" exclude("commons-codec", "commons-codec"),
-    "org.scalaz" %% "scalaz-core" % "7.1.3",
-    "org.scalaz.stream" %% "scalaz-stream" % "0.7a",
+    "com.twitter" %% "finagle-http" % "6.28.0" exclude("commons-codec", "commons-codec"),
+    "org.scalaz" %% "scalaz-core" % "7.1.5",
+    "org.scalaz.stream" %% "scalaz-stream" % "0.8",
     "net.liftweb" %% "lift-json-scalaz7" % liftJsonVersion,
     "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "test",
     "org.specs2" %% "specs2-core" % specs2Version % "test" exclude("org.scalaz", "scalaz-core_2.11"),

@@ -24,7 +24,7 @@ Newman supports the following basic features:
 	Resolver.bintrayRepo("scalaz", "releases"),
 	Resolver.bintrayRepo("io.megam", "scala"))
 
-	libraryDependencies += "io.megam" % "newman" % "1.3.10"
+	libraryDependencies += "io.megam" % "newman" % "1.3.11"
 
 ```
 
