@@ -30,9 +30,8 @@ import com.stackmob.newman.request._
 import com.stackmob.newman.Exceptions.UnknownHttpStatusCodeException
 import com.stackmob.newman.response.HttpResponse
 import org.apache.http.impl.client.{AbstractHttpClient, DefaultHttpClient}
-import org.apache.http.conn.HttpClientConnectionManager
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
-import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.conn.ClientConnectionManager
+import org.apache.http.impl.conn.PoolingClientConnectionManager
 import java.util.concurrent.{ThreadFactory, Executors}
 import ApacheHttpClient._
 import java.util.concurrent.atomic.AtomicInteger
@@ -42,16 +41,14 @@ class ApacheHttpClient(socketTimeout: Int = ApacheHttpClient.DefaultSocketTimeou
        maxConnectionsPerRoute: Int = ApacheHttpClient.DefaultMaxConnectionsPerRoute,
        maxTotalConnections: Int = ApacheHttpClient.DefaultMaxTotalConnections)(implicit val requestContext: ExecutionContext = newmanRequestExecutionContext) extends HttpClient {
        val httpClient: org.apache.http.client.HttpClient =  {
-           val connManager: HttpClientConnectionManager = {
-           val cm = new PoolingHttpClientConnectionManager()
+           val connManager: ClientConnectionManager = {
+           val cm = new PoolingClientConnectionManager()
                cm.setDefaultMaxPerRoute(maxConnectionsPerRoute)
                cm.setMaxTotal(maxTotalConnections)
                cm
              }
-           val cb =  HttpClientBuilder.create
-           cb.setConnectionManager(connManager)
 
-           val client = cb.build
+           val client = new DefaultHttpClient(connManager)
            val httpParams = client.getParams
            HttpConnectionParams.setConnectionTimeout(httpParams, connectionTimeout)
            HttpConnectionParams.setSoTimeout(httpParams, socketTimeout)
