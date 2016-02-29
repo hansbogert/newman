@@ -7,9 +7,9 @@ Feel free to collaborate at https://github.com/megamsys/newman.git."""
 
 licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
-bintrayOrganization := Some("megamsys")
+bintrayOrganization := Some("hbogert")
 
-bintrayRepository := "scala"
+bintrayRepository := "maven"
 
 publishMavenStyle := true
 
@@ -18,7 +18,7 @@ scalaVersion := "2.11.7"
 scalacOptions in Test ++= Seq("-Yrangepos")
 
 scalacOptions := Seq(
-  "-target:jvm-1.8",
+  "-target:jvm-1.7",
   "-deprecation",
   "-feature",
   "-optimise",

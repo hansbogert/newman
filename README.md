@@ -22,7 +22,7 @@ Newman supports the following basic features:
 	resolvers ++= Seq(Resolver.sonatypeRepo("releases"),
 	Resolver.sonatypeRepo("snapshots"),
 	Resolver.bintrayRepo("scalaz", "releases"),
-	Resolver.bintrayRepo("megamsys", "scala"))
+	Resolver.bintrayRepo("hbogert", "maven"))
 
 	libraryDependencies += "io.megam" %% "newman" % "1.3.12"
 
